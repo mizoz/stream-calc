@@ -1,0 +1,30 @@
+# stream-calc: Live Stream Bitrate Calculator
+
+> Free browser tool for event and comms teams. Pick streaming platforms (YouTube Live, Facebook Live, Twitch, LinkedIn Live, Vimeo, Teams town hall RTMP-In, Zoom to RTMP, custom RTMP) and get the video and audio bitrate from each platform's own 2026 guidance, the simulcast total, the upload speed needed with 1.5x to 2x headroom, and OBS / vMix settings (CBR, 2 second keyframe interval). Also calculates video file size from bitrate and duration (ProRes, H.264, phone presets), the bitrate needed to hit a target size, event-day recording storage with backups, and upload time. Runs fully in the browser, no sign-up, no tracking.
+
+URL: https://mizoz.github.io/stream-calc/
+Source: https://github.com/mizoz/stream-calc
+Last checked: 2026-10-21
+
+## Key facts (2026)
+
+| Platform | Guidance |
+|---|---|
+| YouTube Live 1080p30 | H.264 5 Mbps min, 14 Mbps recommended; HEVC/AV1 4 to 10 Mbps |
+| YouTube Live 1080p60 | H.264 6 to 17 Mbps; HEVC/AV1 4 to 12 Mbps |
+| YouTube Live 4K60 | H.264 14 to 50 Mbps; HEVC/AV1 10 to 35 Mbps |
+| Facebook Live 1080p60 | 4,500 to 9,000 kbps, H.264, 8 hour max |
+| Facebook Live 1080p30 | 3,000 to 6,000 kbps |
+| Twitch 1080p60 | 6,000 kbps, CBR; 1440p HEVC up to 9 Mbps with Enhanced Broadcasting |
+| LinkedIn Live | 720p recommended, 1080p max, 30 fps, 3.5 Mbps recommended, 6 Mbps max, 10 Mbps upload |
+| Vimeo | 1080p30 at 4,000 to 5,000 kbps; 1080p60 at 9,000 kbps on Enterprise |
+| Teams RTMP-In | 720p up to 5 Mbps, 1080p up to 10 Mbps, audio 192 kbps AAC |
+| Keyframe interval | 2 seconds everywhere (YouTube and Facebook: never over 4 s) |
+
+- Upload speed needed = (video + audio bitrate) x 1.5 minimum, x 2 for shared or venue networks.
+- Simulcasting from one encoder multiplies upload; sending one stream to a relay costs one stream.
+- File size = bitrate x duration / 8. 8 Mbps H.264 is 3.6 GB per hour; ProRes 422 HQ 1080p30 (220 Mbps) is 99 GB per hour.
+
+## Author
+
+Ahmed Mahmoud, Calgary, Alberta. Founder of FirstShow (https://firstshow.ca). Builds free web tools for marketers, event and comms teams. https://mizoz.github.io/
