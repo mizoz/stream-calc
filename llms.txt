@@ -2,7 +2,7 @@
 
 > Free browser tool for event and comms teams. Pick streaming platforms (YouTube Live, Facebook Live, Twitch, LinkedIn Live, Vimeo, Teams town hall RTMP-In, Zoom to RTMP, custom RTMP) and get the video and audio bitrate from each platform's own 2026 guidance, the simulcast total, the upload speed needed with 1.5x to 2x headroom, and OBS / vMix settings (CBR, 2 second keyframe interval). Also calculates video file size from bitrate and duration (ProRes, H.264, phone presets), the bitrate needed to hit a target size, event-day recording storage with backups, and upload time. Runs fully in the browser, no sign-up, no tracking.
 
-URL: https://mizoz.github.io/stream-calc/
+URL: https://lab.zalastack.com/stream-calc/
 Source: https://github.com/mizoz/stream-calc
 Last checked: 2026-10-21
 
@@ -27,4 +27,4 @@ Last checked: 2026-10-21
 
 ## Author
 
-Ahmed Mahmoud, Calgary, Alberta. Founder of FirstShow (https://firstshow.ca). Builds free web tools for marketers, event and comms teams. https://mizoz.github.io/
+Ahmed Mahmoud, Calgary, Alberta. Founder of FirstShow (https://firstshow.ca). Builds free web tools for marketers, event and comms teams. https://lab.zalastack.com/

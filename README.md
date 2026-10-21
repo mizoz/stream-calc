@@ -1,6 +1,6 @@
 # stream-calc
 
-**Live: https://mizoz.github.io/stream-calc/**
+**Live: https://lab.zalastack.com/stream-calc/**
 
 A live stream bitrate calculator, plus a video file size and upload time calculator, for people who run streams at events.
 
@@ -64,4 +64,4 @@ Not official, so labelled in the tool: the "Custom RTMP" numbers are my own work
 
 MIT. See [LICENSE](LICENSE).
 
-Made by [Ahmed Mahmoud](https://mizoz.github.io/) in Calgary. Other free tools: [social image sizer](https://mizoz.github.io/social-image-sizer/), [UTM builder](https://mizoz.github.io/utm-builder/), [post preview](https://mizoz.github.io/post-preview/), [sponsorship builder](https://mizoz.github.io/sponsorship-builder/).
+Made by [Ahmed Mahmoud](https://lab.zalastack.com/) in Calgary. Other free tools: [social image sizer](https://lab.zalastack.com/social-image-sizer/), [UTM builder](https://lab.zalastack.com/utm-builder/), [post preview](https://lab.zalastack.com/post-preview/), [sponsorship builder](https://lab.zalastack.com/sponsorship-builder/).
