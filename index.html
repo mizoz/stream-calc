@@ -1,0 +1,403 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Live Stream Bitrate Calculator: Upload Speed + File Size</title>
+<meta name="description" content="Free live stream bitrate calculator: YouTube, Facebook, Twitch, LinkedIn bitrates, upload speed with headroom, video file size and upload time. No sign-up.">
+<link rel="canonical" href="https://mizoz.github.io/stream-calc/">
+<meta name="theme-color" content="#f6f7f9" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#111418" media="(prefers-color-scheme: dark)">
+<meta name="color-scheme" content="light dark">
+<link rel="icon" href="favicon.svg" type="image/svg+xml">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="stream-calc">
+<meta property="og:title" content="Live Stream Bitrate Calculator">
+<meta property="og:description" content="Bitrate, upload bandwidth and video file size for YouTube Live, Facebook Live, Twitch, LinkedIn Live, Vimeo, Teams and Zoom. Free, no sign-up.">
+<meta property="og:url" content="https://mizoz.github.io/stream-calc/">
+<meta property="og:image" content="https://mizoz.github.io/stream-calc/og.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="stream-calc: live stream bitrate, upload bandwidth and video file size calculator">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Live Stream Bitrate Calculator">
+<meta name="twitter:description" content="Bitrate, upload bandwidth and video file size for every major streaming platform. Free, no sign-up.">
+<meta name="twitter:image" content="https://mizoz.github.io/stream-calc/og.png">
+<link rel="stylesheet" href="style.css">
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "WebApplication",
+      "name": "stream-calc: Live Stream Bitrate Calculator",
+      "url": "https://mizoz.github.io/stream-calc/",
+      "description": "Live stream bitrate, upload bandwidth and video file size calculator for YouTube Live, Facebook Live, Twitch, LinkedIn Live, Vimeo, Teams and Zoom, with simulcast totals, encoder settings, event storage and upload time.",
+      "applicationCategory": "MultimediaApplication",
+      "operatingSystem": "Any",
+      "browserRequirements": "Requires JavaScript",
+      "isAccessibleForFree": true,
+      "datePublished": "2026-10-21",
+      "dateModified": "2026-10-21",
+      "offers": {"@type": "Offer", "price": "0", "priceCurrency": "CAD"},
+      "author": {"@type":"Person","name":"Ahmed Mahmoud","url":"https://mizoz.github.io/","jobTitle":"Founder, FirstShow","address":{"@type":"PostalAddress","addressLocality":"Calgary","addressRegion":"AB","addressCountry":"CA"},"sameAs":["https://github.com/mizoz","https://www.linkedin.com/in/ahmed-m-82ba28169/","https://firstshow.ca"]}
+    },
+    {
+      "@type": "HowTo",
+      "name": "How to work out your live stream bitrate and upload speed",
+      "step": [
+        {"@type": "HowToStep", "name": "Pick your platforms", "text": "Add each platform you are streaming to: YouTube Live, Facebook Live, Twitch, LinkedIn Live, Vimeo, a Teams town hall, Zoom or a custom RTMP server."},
+        {"@type": "HowToStep", "name": "Choose resolution, frame rate and codec", "text": "Set the resolution and frame rate for each destination, and the codec where the platform supports more than H.264."},
+        {"@type": "HowToStep", "name": "Set headroom and your measured upload", "text": "Pick 1.5x or 2x headroom and type in the upload speed from a speed test at the venue to see if your connection is enough."},
+        {"@type": "HowToStep", "name": "Copy the encoder settings", "text": "Use the OBS and vMix hints (CBR, 2 second keyframe interval, bitrate, audio) and copy the summary for your run sheet."}
+      ]
+    },
+    {
+      "@type": "FAQPage",
+      "mainEntity": [
+        {"@type": "Question", "name": "What bitrate should I use for YouTube Live at 1080p?", "acceptedAnswer": {"@type": "Answer", "text": "YouTube's 2026 guidance for H.264 is a minimum of 5 Mbps and a recommended 14 Mbps at 1080p 30 fps, and 6 to 17 Mbps at 1080p 60 fps. With HEVC or AV1 it drops to 4 to 10 Mbps at 30 fps and 4 to 12 Mbps at 60 fps. For most event streams on a normal venue line, something around 6 to 8 Mbps at 1080p30 looks clean."}},
+        {"@type": "Question", "name": "How much upload speed do I need for streaming?", "acceptedAnswer": {"@type": "Answer", "text": "Add up the video and audio bitrate of everything you send, then multiply by 1.5 at the very least, and by 2 for anything that matters. A 6 Mbps stream needs 9 to 12 Mbps of real, measured upload. Microsoft's Teams encoder guide gives the same advice: double your streaming bitrate when sizing bandwidth."}},
+        {"@type": "Question", "name": "Why do platforms ask for CBR and a 2 second keyframe interval?", "acceptedAnswer": {"@type": "Answer", "text": "Constant bitrate keeps the data rate steady so it does not spike past your connection during fast motion. A keyframe every 2 seconds lets the platform cut your stream into segments and switch viewers between qualities cleanly. YouTube and Facebook say never go over 4 seconds."}},
+        {"@type": "Question", "name": "Can I stream to YouTube, Facebook and LinkedIn at the same time?", "acceptedAnswer": {"@type": "Answer", "text": "Yes. Either your encoder sends a separate stream to each platform, which multiplies your upload, or you send one stream to a relay service that forwards it, which only costs one stream of upload. Watch platform caps: LinkedIn tops out at 6 Mbps and 30 fps, Twitch at 6 Mbps on standard ingest."}},
+        {"@type": "Question", "name": "Should I stream in HEVC or AV1 instead of H.264?", "acceptedAnswer": {"@type": "Answer", "text": "Only where the platform accepts it. YouTube Live takes H.264, HEVC and AV1, and its recommended bitrates for HEVC and AV1 are roughly 30% lower. Twitch takes HEVC for 1440p through Enhanced Broadcasting. Facebook, LinkedIn, Vimeo and Teams RTMP-In want H.264."}},
+        {"@type": "Question", "name": "How big is a one hour 1080p video file?", "acceptedAnswer": {"@type": "Answer", "text": "At a typical H.264 delivery bitrate of 8 Mbps plus 384 kbps audio, one hour is about 3.8 GB. The same hour in ProRes 422 HQ at 1080p 30 fps is about 99 GB, and in 4K ProRes 422 HQ about 398 GB."}},
+        {"@type": "Question", "name": "Why does my computer show a smaller file size than the calculator?", "acceptedAnswer": {"@type": "Answer", "text": "Drive makers and this calculator use decimal units, where 1 GB is 1,000,000,000 bytes. Windows uses binary units, where its GB is really 1,073,741,824 bytes, so the same file looks about 7% smaller. The calculator shows both."}},
+        {"@type": "Question", "name": "Does this calculator send my numbers anywhere?", "acceptedAnswer": {"@type": "Answer", "text": "No. Everything runs in your browser. Nothing you type leaves the page, and there is no tracking. Your last settings are saved in your own browser so they are there next time."}}
+      ]
+    }
+  ]
+}
+</script>
+</head>
+<body>
+<a class="skip" href="#tool">Skip to calculator</a>
+<header class="top">
+  <div class="wrap">
+    <p class="brand"><a href="https://mizoz.github.io/stream-calc/"><svg width="22" height="22" viewBox="0 0 32 32" aria-hidden="true"><rect width="32" height="32" rx="7" fill="currentColor"/><circle cx="16" cy="16" r="4" fill="var(--bg)"/><path d="M9.5 9.5a9 9 0 0 0 0 13M22.5 9.5a9 9 0 0 1 0 13" stroke="var(--bg)" stroke-width="2.4" fill="none" stroke-linecap="round"/></svg>stream-calc</a></p>
+    <h1>Live stream bitrate calculator</h1>
+    <p class="lede">Pick your platforms and get the bitrate, the upload speed you actually need, and the encoder settings. Plus a video file size and upload time calculator for the recordings. Numbers come from each platform's own 2026 guidance.</p>
+  </div>
+</header>
+
+<main class="wrap">
+  <section id="tool" class="tool" aria-label="Calculator">
+    <div class="tabs" role="tablist" aria-label="Calculators">
+      <button role="tab" id="tab-live" data-tab="live" aria-controls="p-live" aria-selected="true">Live stream</button>
+      <button role="tab" id="tab-file" data-tab="file" aria-controls="p-file" aria-selected="false" tabindex="-1">File size</button>
+      <button role="tab" id="tab-upload" data-tab="upload" aria-controls="p-upload" aria-selected="false" tabindex="-1">Upload time</button>
+    </div>
+
+    <!-- live -->
+    <div role="tabpanel" id="p-live" aria-labelledby="tab-live" class="panel">
+      <div class="grid">
+        <div class="col inputs">
+          <h2 class="h3">Where are you streaming?</h2>
+          <ol id="rows" class="rows"></ol>
+          <button type="button" id="add" class="btn ghost">+ Add a destination (simulcast)</button>
+
+          <fieldset>
+            <legend>Bitrate to aim for</legend>
+            <p class="hint">Balanced sits between the platform's minimum and its recommended number, which is where most event streams end up.</p>
+            <div class="seg">
+              <label><input type="radio" name="tg" value="min"> Lowest safe</label>
+              <label><input type="radio" name="tg" value="bal"> Balanced</label>
+              <label><input type="radio" name="tg" value="rec"> Platform recommended</label>
+              <label><input type="radio" name="tg" value="max"> Highest allowed</label>
+            </div>
+          </fieldset>
+
+          <fieldset>
+            <legend>With more than one destination</legend>
+            <div class="seg">
+              <label><input type="radio" name="md" value="direct"> Encoder sends each one</label>
+              <label><input type="radio" name="md" value="relay"> One stream to a relay</label>
+            </div>
+          </fieldset>
+
+          <div class="two">
+            <div class="field">
+              <label for="hd">Headroom</label>
+              <select id="hd">
+                <option value="1.25">1.25× (bare minimum)</option>
+                <option value="1.5">1.5× (wired, dedicated)</option>
+                <option value="2">2× (shared or venue)</option>
+                <option value="3">3× (cellular, bonded)</option>
+              </select>
+            </div>
+            <div class="field">
+              <label for="au">Audio bitrate</label>
+              <select id="au">
+                <option value="auto">Platform default</option>
+                <option value="96">96 kbps</option>
+                <option value="128">128 kbps</option>
+                <option value="160">160 kbps</option>
+                <option value="192">192 kbps</option>
+                <option value="256">256 kbps</option>
+                <option value="320">320 kbps</option>
+              </select>
+            </div>
+          </div>
+          <div class="field">
+            <label for="up">Your measured upload speed (Mbps, optional)</label>
+            <input id="up" type="number" inputmode="decimal" min="0" step="0.1" placeholder="e.g. 20">
+          </div>
+        </div>
+
+        <div class="col results" aria-live="polite">
+          <div class="big">
+            <div><span class="lbl" id="outSendLabel">You send</span><span class="val" id="outSend">0</span></div>
+            <div class="hl"><span class="lbl" id="outNeedLabel">Upload you need</span><span class="val" id="outNeed">0</span></div>
+          </div>
+          <p id="verdict" class="verdict" hidden></p>
+          <ul id="warnings" class="warnings" hidden></ul>
+          <div id="perDest"></div>
+          <div class="actions">
+            <button type="button" class="btn" data-copy="live">Copy summary</button>
+            <button type="button" class="btn ghost" data-copy="link">Copy share link</button>
+          </div>
+        </div>
+      </div>
+      <details class="hints" open>
+        <summary>OBS and vMix settings for this stream</summary>
+        <div id="hints"></div>
+      </details>
+    </div>
+
+    <!-- file -->
+    <div role="tabpanel" id="p-file" aria-labelledby="tab-file" class="panel" hidden>
+      <div class="grid">
+        <div class="col inputs">
+          <h2 class="h3">Video file size</h2>
+          <fieldset>
+            <legend>Duration</legend>
+            <div class="three">
+              <div class="field"><label for="fh">Hours</label><input id="fh" type="number" min="0" step="1" inputmode="numeric"></div>
+              <div class="field"><label for="fm">Minutes</label><input id="fm" type="number" min="0" step="1" inputmode="numeric"></div>
+              <div class="field"><label for="fs">Seconds</label><input id="fs" type="number" min="0" step="1" inputmode="numeric"></div>
+            </div>
+          </fieldset>
+          <div class="field">
+            <label for="fp">Preset</label>
+            <select id="fp"></select>
+          </div>
+          <div class="two">
+            <div class="field"><label for="fv">Video bitrate (Mbps)</label><input id="fv" type="number" min="0" step="0.1" inputmode="decimal"></div>
+            <div class="field"><label for="fa">Audio bitrate (kbps)</label><input id="fa" type="number" min="0" step="1" inputmode="numeric"></div>
+          </div>
+          <p class="hint">ProRes presets use Apple's published target rates plus 48 kHz 24-bit stereo PCM audio (2,304 kbps). Phone presets are rough averages and already include audio.</p>
+        </div>
+        <div class="col results" aria-live="polite">
+          <div class="big one">
+            <div class="hl"><span class="lbl">File size</span><span class="val" id="outSize">0</span></div>
+          </div>
+          <p class="muted" id="outSizeBin"></p>
+          <p class="muted" id="outPerMin"></p>
+
+          <h3>Reverse it: bitrate to hit a target size</h3>
+          <div class="three">
+            <div class="field"><label for="ts">Target size</label><input id="ts" type="number" min="0" step="0.1" inputmode="decimal"></div>
+            <div class="field"><label for="tu">Unit</label><select id="tu"><option>MB</option><option>GB</option><option>TB</option></select></div>
+            <div class="field"><label for="mg">Margin %</label><input id="mg" type="number" min="0" max="50" step="1" inputmode="numeric"></div>
+          </div>
+          <p class="result-line">Max video bitrate: <strong id="outTarget">0</strong></p>
+          <p class="muted" id="outTargetNote"></p>
+
+          <h3>Event-day recording storage</h3>
+          <p class="hint">Uses the bitrate above, not the duration. Count every camera ISO and every program recording.</p>
+          <div class="three">
+            <div class="field"><label for="n">Recordings at once</label><input id="n" type="number" min="1" step="1" inputmode="numeric"></div>
+            <div class="field"><label for="hpd">Hours per day</label><input id="hpd" type="number" min="0" step="0.5" inputmode="decimal"></div>
+            <div class="field"><label for="days">Days</label><input id="days" type="number" min="1" step="1" inputmode="numeric"></div>
+          </div>
+          <div class="two">
+            <div class="field"><label for="cp">Copies (incl. backups)</label>
+              <select id="cp"><option value="1">1 (no backup, brave)</option><option value="2">2 (one backup)</option><option value="3">3 (3-2-1 rule)</option></select></div>
+            <div class="field"><label for="ds">Drive size</label>
+              <select id="ds"><option value="1">1 TB</option><option value="2">2 TB</option><option value="4">4 TB</option><option value="8">8 TB</option><option value="16">16 TB</option></select></div>
+          </div>
+          <p class="result-line">Total storage: <strong id="outEvent">0</strong></p>
+          <p class="muted" id="outEventNote"></p>
+          <div class="actions">
+            <button type="button" class="btn" data-copy="file">Copy summary</button>
+            <button type="button" class="btn ghost" data-copy="link">Copy share link</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- upload -->
+    <div role="tabpanel" id="p-upload" aria-labelledby="tab-upload" class="panel" hidden>
+      <div class="grid">
+        <div class="col inputs">
+          <h2 class="h3">Upload time</h2>
+          <div class="two">
+            <div class="field"><label for="us">File size</label><input id="us" type="number" min="0" step="0.1" inputmode="decimal"></div>
+            <div class="field"><label for="uu">Unit</label><select id="uu"><option>MB</option><option>GB</option><option>TB</option><option value="GiB">GiB (Windows GB)</option></select></div>
+          </div>
+          <button type="button" id="useFile" class="btn ghost">Use the size from the File size tab</button>
+          <div class="two">
+            <div class="field"><label for="sp">Upload speed (Mbps)</label><input id="sp" type="number" min="0" step="0.1" inputmode="decimal"></div>
+            <div class="field"><label for="ef">Real-world efficiency %</label><input id="ef" type="number" min="10" max="100" step="1" inputmode="numeric"></div>
+          </div>
+          <p class="hint">Speed tests are a best case. Uploads to Drive, Dropbox or YouTube usually land at 70 to 90% of it, less over Wi-Fi.</p>
+        </div>
+        <div class="col results" aria-live="polite">
+          <div class="big one">
+            <div class="hl"><span class="lbl">Upload time</span><span class="val" id="outTime">0</span></div>
+          </div>
+          <p class="muted" id="outTimeNote"></p>
+          <table class="tbl small">
+            <caption>Same file at other speeds</caption>
+            <thead><tr><th scope="col">Upload speed</th><th scope="col">Time</th></tr></thead>
+            <tbody id="speedTable"></tbody>
+          </table>
+          <div class="actions">
+            <button type="button" class="btn" data-copy="upload">Copy summary</button>
+            <button type="button" class="btn ghost" data-copy="link">Copy share link</button>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="toolfoot">
+      <p class="privacy">Runs entirely in your browser. Nothing you type leaves this page. Your last settings stay in this browser only.</p>
+      <button type="button" id="reset" class="btn link">Reset everything</button>
+    </div>
+    <p id="status" class="sr-only" role="status"></p>
+  </section>
+
+  <article class="content">
+    <section>
+      <h2>What this does</h2>
+      <p>I run streams for events, and every time I end up with five tabs open: YouTube's encoder page, Meta's, LinkedIn's, a speed test, and a calculator to figure out how big the recordings will be. This puts it in one place. The <a href="#tool" data-goto="live">live stream planner</a> gives you each platform's bitrate, the total you push for a simulcast, and the upload speed to ask the venue for. The <a href="#tool" data-goto="file">video file size calculator</a> handles recordings, target sizes and how many drives to bring. The <a href="#tool" data-goto="upload">upload time calculator</a> tells you if the footage will be on Dropbox before the client asks.</p>
+    </section>
+
+    <section>
+      <h2>How to use it</h2>
+      <ol class="steps">
+        <li><strong>Add your platforms.</strong> One row per destination. Add more to see the simulcast total.</li>
+        <li><strong>Pick resolution, frame rate and codec.</strong> Only options the platform accepts are listed.</li>
+        <li><strong>Choose headroom and type your measured upload.</strong> Use 2× unless you have a dedicated wired line.</li>
+        <li><strong>Copy the settings.</strong> The OBS and vMix hints match the numbers, and Copy summary gives you text for the run sheet.</li>
+      </ol>
+    </section>
+
+    <section>
+      <h2>How much upload speed do you need for streaming?</h2>
+      <p>Your stream is video bitrate plus audio bitrate. Your connection has to carry that all the time, not on average, and real connections wobble. So the rule is:</p>
+      <p class="callout"><strong>Upload needed = (video + audio) × 1.5 at minimum, × 2 to be safe.</strong></p>
+      <p>1.5× is fine on a wired line nobody else is using. 2× is what I use for anything with a client attached, and it's what Microsoft's own Teams encoder guide says: double the streaming bitrate when you size bandwidth. Vimeo says the same thing more vaguely: keep the bitrate well under your upload speed. Venue Wi-Fi with 300 attendees on it is not your upload speed, whatever the speed test said at 8 a.m.</p>
+      <p>Simulcasting from one encoder multiplies the upload: YouTube at 6 Mbps plus Facebook at 4.5 Mbps plus LinkedIn at 3.5 Mbps is 14 Mbps of video before headroom. Sending one stream to a relay service and letting it fan out costs only one stream of upload.</p>
+    </section>
+
+    <section>
+      <h2>YouTube Live bitrate for 1080p, 1440p and 4K (2026)</h2>
+      <p>From YouTube's live encoder settings page. Keyframe every 2 s (never over 4 s), CBR, audio 128 kbps AAC stereo.</p>
+      <div class="tblwrap"><table class="tbl">
+        <thead><tr><th scope="col">Resolution</th><th scope="col">H.264 min</th><th scope="col">H.264 recommended</th><th scope="col">HEVC / AV1 min</th><th scope="col">HEVC / AV1 recommended</th></tr></thead>
+        <tbody>
+          <tr><th scope="row">4K 2160p60</th><td>14 Mbps</td><td>50 Mbps</td><td>10 Mbps</td><td>35 Mbps</td></tr>
+          <tr><th scope="row">4K 2160p30</th><td>11 Mbps</td><td>42 Mbps</td><td>8 Mbps</td><td>30 Mbps</td></tr>
+          <tr><th scope="row">1440p60</th><td>8 Mbps</td><td>34 Mbps</td><td>6 Mbps</td><td>24 Mbps</td></tr>
+          <tr><th scope="row">1440p30</th><td>7 Mbps</td><td>21 Mbps</td><td>5 Mbps</td><td>15 Mbps</td></tr>
+          <tr><th scope="row">1080p60</th><td>6 Mbps</td><td>17 Mbps</td><td>4 Mbps</td><td>12 Mbps</td></tr>
+          <tr><th scope="row">1080p30</th><td>5 Mbps</td><td>14 Mbps</td><td>4 Mbps</td><td>10 Mbps</td></tr>
+          <tr><th scope="row">720p60</th><td>3 Mbps</td><td>8 Mbps</td><td>2 Mbps</td><td>6 Mbps</td></tr>
+          <tr><th scope="row">720p30</th><td>3 Mbps</td><td>8 Mbps</td><td>2 Mbps</td><td>6 Mbps</td></tr>
+          <tr><th scope="row">480p30</th><td>0.4 Mbps</td><td>4 Mbps</td><td>0.3 Mbps</td><td>3 Mbps</td></tr>
+        </tbody>
+      </table></div>
+    </section>
+
+    <section>
+      <h2>Facebook Live bitrate 2026</h2>
+      <p>From Meta's Live Video API requirements. H.264 (level 4.1, or 4.2 for 1080p60), keyframe every 2 s, AAC-LC audio at 128 kbps (256 max), 8 hour limit.</p>
+      <div class="tblwrap"><table class="tbl">
+        <thead><tr><th scope="col">Resolution</th><th scope="col">Video bitrate range</th></tr></thead>
+        <tbody>
+          <tr><th scope="row">1080p60</th><td>4,500 to 9,000 kbps</td></tr>
+          <tr><th scope="row">1080p30</th><td>3,000 to 6,000 kbps</td></tr>
+          <tr><th scope="row">720p60</th><td>2,250 to 6,000 kbps</td></tr>
+          <tr><th scope="row">720p30</th><td>1,500 to 4,000 kbps</td></tr>
+          <tr><th scope="row">480p30</th><td>600 to 2,000 kbps</td></tr>
+          <tr><th scope="row">360p</th><td>400 to 1,000 kbps</td></tr>
+        </tbody>
+      </table></div>
+    </section>
+
+    <section>
+      <h2>Twitch bitrate settings 2026</h2>
+      <p>From Twitch's broadcasting guidelines. CBR, keyframe 2 s, audio AAC-LC up to 160 kbps, 48 hour max broadcast. Since June 2026, Partners and Affiliates can stream 1440p in HEVC at up to 9 Mbps through Enhanced Broadcasting, where 1080p H.264 goes up to 7.5 Mbps.</p>
+      <div class="tblwrap"><table class="tbl">
+        <thead><tr><th scope="col">Resolution</th><th scope="col">Bitrate</th></tr></thead>
+        <tbody>
+          <tr><th scope="row">1080p60</th><td>6,000 kbps</td></tr>
+          <tr><th scope="row">1080p30</th><td>4,500 kbps</td></tr>
+          <tr><th scope="row">720p60</th><td>4,500 kbps</td></tr>
+          <tr><th scope="row">720p30</th><td>3,000 kbps</td></tr>
+          <tr><th scope="row">1440p HEVC (Enhanced Broadcasting)</th><td>up to 9,000 kbps</td></tr>
+        </tbody>
+      </table></div>
+    </section>
+
+    <section>
+      <h2>LinkedIn Live, Vimeo, Teams and Zoom encoder settings</h2>
+      <div class="tblwrap"><table class="tbl">
+        <thead><tr><th scope="col">Platform</th><th scope="col">Video</th><th scope="col">Audio</th><th scope="col">Notes</th></tr></thead>
+        <tbody>
+          <tr><th scope="row">LinkedIn Live</th><td>720p recommended, 1080p max, 30 fps. 3.5 Mbps recommended, 6 Mbps max. H.264.</td><td>128 kbps AAC, 48 kHz</td><td>Keyframe 2 s. Baseline profile suggested. Needs at least 10 Mbps upload.</td></tr>
+          <tr><th scope="row">Vimeo</th><td>720p30 at 2,000 to 2,500 kbps, 1080p30 at 4,000 to 5,000 kbps, 1080p60 at 9,000 kbps (Enterprise). H.264.</td><td>Re-encoded to 256 / 128 / 56 kbps, 48 kHz</td><td>Keyframe 2 s. Advanced and Premium cap at 1080p30, 5,000 kbps.</td></tr>
+          <tr><th scope="row">Teams town hall (RTMP-In)</th><td>720p up to 5 Mbps (strict CBR), 1080p up to 10 Mbps (CBR or VBR), at least 29.97 fps. H.264 High, level 4.0.</td><td>192 kbps AAC-LC, 48 kHz</td><td>GOP 2 s with an IDR at the start. Microsoft says to double the bitrate for bandwidth.</td></tr>
+          <tr><th scope="row">Zoom to custom RTMP</th><td>Zoom encodes in its cloud; 720p by default.</td><td>Included</td><td>Your venue uploads only the Zoom app's video: about 2.6 Mbps for 720p, 3.8 Mbps for 1080p.</td></tr>
+        </tbody>
+      </table></div>
+    </section>
+
+    <section>
+      <h2>Video file size calculator: bitrates per hour</h2>
+      <p>File size = bitrate × duration ÷ 8. A few common ones, per hour, video only. ProRes rates are Apple's published targets.</p>
+      <div class="tblwrap"><table class="tbl">
+        <thead><tr><th scope="col">Format</th><th scope="col">Bitrate</th><th scope="col">Per hour</th></tr></thead>
+        <tbody>
+          <tr><th scope="row">H.264 delivery 1080p30 (YouTube upload spec)</th><td>8 Mbps</td><td>3.6 GB</td></tr>
+          <tr><th scope="row">H.264 delivery 1080p60</th><td>12 Mbps</td><td>5.4 GB</td></tr>
+          <tr><th scope="row">H.264 delivery 4K30</th><td>35 to 45 Mbps</td><td>16 to 20 GB</td></tr>
+          <tr><th scope="row">ProRes 422 Proxy 1080p30</th><td>45 Mbps</td><td>20 GB</td></tr>
+          <tr><th scope="row">ProRes 422 LT 1080p30</th><td>102 Mbps</td><td>46 GB</td></tr>
+          <tr><th scope="row">ProRes 422 1080p30</th><td>147 Mbps</td><td>66 GB</td></tr>
+          <tr><th scope="row">ProRes 422 HQ 1080p30</th><td>220 Mbps</td><td>99 GB</td></tr>
+          <tr><th scope="row">ProRes 422 HQ 1080p60</th><td>440 Mbps</td><td>198 GB</td></tr>
+          <tr><th scope="row">ProRes 422 HQ UHD 30</th><td>884 Mbps</td><td>398 GB</td></tr>
+        </tbody>
+      </table></div>
+    </section>
+
+    <section class="faq">
+      <h2>FAQ</h2>
+      <details><summary>What bitrate should I use for YouTube Live at 1080p?</summary><p>YouTube's 2026 guidance for H.264 is a minimum of 5 Mbps and a recommended 14 Mbps at 1080p 30 fps, and 6 to 17 Mbps at 1080p 60 fps. With HEVC or AV1 it drops to 4 to 10 Mbps at 30 fps and 4 to 12 Mbps at 60 fps. For most event streams on a normal venue line, something around 6 to 8 Mbps at 1080p30 looks clean.</p></details>
+      <details><summary>How much upload speed do I need for streaming?</summary><p>Add up the video and audio bitrate of everything you send, then multiply by 1.5 at the very least, and by 2 for anything that matters. A 6 Mbps stream needs 9 to 12 Mbps of real, measured upload. Microsoft's Teams encoder guide gives the same advice: double your streaming bitrate when sizing bandwidth.</p></details>
+      <details><summary>Why do platforms ask for CBR and a 2 second keyframe interval?</summary><p>Constant bitrate keeps the data rate steady so it does not spike past your connection during fast motion. A keyframe every 2 seconds lets the platform cut your stream into segments and switch viewers between qualities cleanly. YouTube and Facebook say never go over 4 seconds.</p></details>
+      <details><summary>Can I stream to YouTube, Facebook and LinkedIn at the same time?</summary><p>Yes. Either your encoder sends a separate stream to each platform, which multiplies your upload, or you send one stream to a relay service that forwards it, which only costs one stream of upload. Watch platform caps: LinkedIn tops out at 6 Mbps and 30 fps, Twitch at 6 Mbps on standard ingest.</p></details>
+      <details><summary>Should I stream in HEVC or AV1 instead of H.264?</summary><p>Only where the platform accepts it. YouTube Live takes H.264, HEVC and AV1, and its recommended bitrates for HEVC and AV1 are roughly 30% lower. Twitch takes HEVC for 1440p through Enhanced Broadcasting. Facebook, LinkedIn, Vimeo and Teams RTMP-In want H.264.</p></details>
+      <details><summary>How big is a one hour 1080p video file?</summary><p>At a typical H.264 delivery bitrate of 8 Mbps plus 384 kbps audio, one hour is about 3.8 GB. The same hour in ProRes 422 HQ at 1080p 30 fps is about 99 GB, and in 4K ProRes 422 HQ about 398 GB.</p></details>
+      <details><summary>Why does my computer show a smaller file size than the calculator?</summary><p>Drive makers and this calculator use decimal units, where 1 GB is 1,000,000,000 bytes. Windows uses binary units, where its GB is really 1,073,741,824 bytes, so the same file looks about 7% smaller. The calculator shows both.</p></details>
+      <details><summary>Does this calculator send my numbers anywhere?</summary><p>No. Everything runs in your browser. Nothing you type leaves the page, and there is no tracking. Your last settings are saved in your own browser so they are there next time.</p></details>
+    </section>
+
+    <p class="updated">Last updated October 2026. Sources: YouTube Help, Meta Live Video API docs, Twitch Help and blog, LinkedIn Help, Vimeo Help, Microsoft Learn, Zoom system requirements, Apple ProRes white paper. Full links in the <a href="https://github.com/mizoz/stream-calc#sources">README</a>.</p>
+  </article>
+</main>
+
+<footer class="foot">
+  <div class="wrap">
+    <p>Made by <a href="https://mizoz.github.io/">Ahmed Mahmoud in Calgary</a>. Free, no sign-up, no tracking. <a href="https://github.com/mizoz/stream-calc">Source on GitHub</a>.</p>
+    <p class="more">More free tools:
+      <a href="https://mizoz.github.io/social-image-sizer/">Social image sizer</a> ·
+      <a href="https://mizoz.github.io/utm-builder/">UTM builder</a> ·
+      <a href="https://mizoz.github.io/post-preview/">Post preview</a> ·
+      <a href="https://mizoz.github.io/sponsorship-builder/">Sponsorship builder</a>
+    </p>
+  </div>
+</footer>
+<script src="app.js" defer></script>
+</body>
+</html>
